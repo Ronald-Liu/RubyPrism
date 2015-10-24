@@ -1,0 +1,17 @@
+//
+// Created by Ronald Liu on 18/9/15.
+//
+
+#ifndef RUBYPRISM_ERRNO_DEF_H_H
+#define RUBYPRISM_ERRNO_DEF_H_H
+
+#define GET_MAJOR_ERRNO(ERRNO) ((ERRNO) >> 8)
+#define GET_MINOR_ERRNO(ERRNO) ((ERRNO) & 0xff)
+#define GEN_ERRNO(MAJOR, MINOR) (((MAJOR)<<8)+((MINOR)&0xff))
+
+#define ERROR_ENCRYPT_LENGTH_MISMATCH 0x1
+#define ERROR_CIPHER_PROCESS 0x2
+
+#define ERROR_CHECKSUM_MISMATCH 0x11
+
+#endif //RUBYPRISM_ERRNO_DEF_H_H

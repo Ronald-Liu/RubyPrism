@@ -1,0 +1,2 @@
+add_executable(stub_test stub_test.c)
+target_link_libraries(stub_test rp_network rp_core rp_crypt_stub)
