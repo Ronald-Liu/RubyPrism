@@ -77,7 +77,7 @@ int calcHeader(const void* src, size_t size, struct RP_CryptConfigBlock* crypt_c
         goto cryptError;
     
     uint8_t padding;
-    //crypt_config->cryptoSuite->rand(&padding, sizeof(padding), crypt_config);
+    crypt_config->cryptoSuite->rand(&padding, sizeof(padding), crypt_config);
     padding = 0;
     *paddingLength = padding;
     sHeader.payloadLength = htons(padding + size);
@@ -103,9 +103,11 @@ int calcHeader(const void* src, size_t size, struct RP_CryptConfigBlock* crypt_c
     
 }
 
-void pushFragment(struct streamFragment* head, void* data, size_t size){
+void pushFragment(struct streamFragment* head, const void* const data, size_t size){
     struct streamFragment* newNode = (struct streamFragment*) malloc(sizeof(struct streamFragment));
-    newNode->data = data;
+    
+    newNode->data = malloc(size);
+    memcpy(newNode->data, data, size);
     newNode->size = size;
 
     head->prev->next = newNode;
@@ -122,7 +124,7 @@ void getLenFromFragmentList(struct streamFragment* head, void** data, size_t siz
     while(size > 0){
         if (head->size > size){
             memcpy(tmpData, head->data, size);
-            memmove(tmpData, tmpData+size, head->size - size);
+            memmove(head->data, head->data+size, head->size - size);
             head->size -= size;
             break;
         }else{

@@ -14,7 +14,9 @@ static int init(void* key, size_t keySize, struct RP_CryptConfigBlock* block){
     struct stubContext* context = (struct stubContext*) malloc(sizeof(struct stubContext));
     if (context == NULL)
         return -1;
-    memcpy(context->key, key, 16);
+    memcpy(context->key, key, keySize);
+    for (int i = keySize; i < 16; i++)
+        context->key[i] = i;
     block->context = context;
 
     return 0;
@@ -39,8 +41,8 @@ static int enc(const void* src, size_t srcLen, void** dst, size_t* dstLen, struc
     uint8_t *srcTmp = (uint8_t*) src;
     struct stubContext* context = (struct stubContext*) block->context;
     for (int i = 0; i < srcLen; i++)
-        //dstTmp[i] = (srcTmp[i] ^ context->key[i%16] ^ context->iv[i%16]);
-        dstTmp[i] = srcTmp[i];
+        dstTmp[i] = (srcTmp[i] ^ context->key[i%16] ^ context->iv[i%16]);
+        
     *dst = dstTmp;
     return 0;
 }
@@ -55,6 +57,7 @@ static int mrand(void* dst, size_t length, struct RP_CryptConfigBlock* block){
 static size_t estLen(size_t origin){
     return origin;
 }
+
 
 struct CryptoSuite cryptStubSuite = {
         init,

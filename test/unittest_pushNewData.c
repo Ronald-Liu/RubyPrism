@@ -13,19 +13,17 @@
 
 int myHandler(void* data, size_t size, void* context){
     char* tmp = (char*) data;
-    assert(tmp[0] == '1');
-    assert(tmp[1] == '2');
-    assert(0);
+    assert(tmp[0] == 'a');
+    assert(tmp[1] == 'b');
+    assert(tmp[2] == 'c');
     return 0;
 }
 
 int main(){
-    freopen("tmp1", "w", stdout);
-    freopen("tmp2", "r", stdin);
-    struct RP_CryptConfigBlock block;
-    cryptStubSuite.init((void*)"123", 3, &block);
-    writeData(STDOUT_FILENO, (void*) "abc", 3, &block);
+    freopen("tmp1", "rb", stdin);
     struct RP_StreamStateMachine state;
+    struct RP_CryptConfigBlock block;
+    cryptStubSuite.init((void*)"123", 3, &block); 
     initStreamStateMachine(&state, &block, NULL);
     uint8_t tmpData[256];
     ssize_t len = read(0, tmpData, 256);
